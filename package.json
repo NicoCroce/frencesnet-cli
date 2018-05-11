@@ -1,0 +1,16 @@
+{
+  "name": "francesnet",
+  "version": "1.0.6",
+  "description": "Crear componentes en fnet",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nicolás Croce",
+  "license": "ISC",
+  "devDependencies": {
+    "commander": "^2.15.1"
+  }
+}
