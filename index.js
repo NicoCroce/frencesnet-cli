@@ -2,6 +2,7 @@
 'use strict';
 
 const file = require('./files.js'),
+    chalk = require('chalk'),
     inquirer = require('inquirer'),
     program = require('commander');
 
@@ -11,7 +12,7 @@ let createFile = new file();
 // HEADER
 process.stdout.write('\x1Bc');
 
-console.log('🔥  🔥  🔥    Frances Net CLI  Desarrollado por Nicolás Croce --> ingcrocenicolas@outlook.com 😉  🍺');
+console.log(chalk`🔥  🔥  🔥    Frances Net CLI  Desarrollado por {cyan   NICOLÁS CROCE   ingcrocenicolas@outlook.com }   😉  🍺`);
 console.log('\n');
 
 program
@@ -40,7 +41,10 @@ inquirer
         {
             type: 'input',
             name: 'nombre',
-            message: '¿Qué nombre deseas utilizar?'
+            message: '¿Qué nombre deseas utilizar? (respetar CamelCase)',
+            validate: (name) => {
+                return name !== '';
+            }
         }
     ])
     .then(answers => {
@@ -53,12 +57,15 @@ function createComponenet(variable) {
     createFile.createComponent(variable)
         .then((res) => {
             console.log('\n');
-            console.log('👌 ¡Componente creado con éxito! 🎉');
+            console.log('👌  ¡Componente creado con éxito! 🎉');
+        })
+        .catch((err) => {
+            console.log(chalk`{red  ${err}}`)
         });
 }
 
 function createFactory(variable) {
-    console.log('Crea factoey');
+    console.log(chalk`{cyan PRÓXIMAMENTE ESTARÁ DISPONIBLE}  ✍️  ✍️  ✍️`)
 }
 
 
