@@ -16,7 +16,7 @@ console.log(chalk`🔥  🔥  🔥    Frances Net CLI  Desarrollado por {cyan   
 console.log('\n');
 
 program
-    .version('1.1.1', '-v, --version')
+    .version('1.1.2', '-v, --version')
     .description('Crear componente para fnet');
 
 
