@@ -15,7 +15,7 @@ console.log('🔥  🔥  🔥    Frances Net CLI  Desarrollado por Nicolás Croc
 console.log('\n');
 
 program
-    .version('1.0.9', '-v, --version')
+    .version('1.1.0', '-v, --version')
     .description('Crear componente para fnet');
 
 
