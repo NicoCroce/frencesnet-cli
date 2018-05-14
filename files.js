@@ -1,5 +1,7 @@
 'use strict';
 
+const inquirier = require('./inquirer');
+
 (() => {
     const fs = require('fs'),
         chalk = require('chalk'),
@@ -18,7 +20,7 @@
                 } else {
                     try {
                         fs.mkdirSync(routs.components + variable);
-                    } catch(err) {
+                    } catch (err) {
                         reject('❗  NO TE ENCUENTRAS EN EL ROOT DEL PROYECTO  😱');
                         throw err;
                     }
@@ -39,10 +41,10 @@
     let addReferences = (variable) => {
         return new Promise((resolve, reject) => {
             let className = utilFiles.getCssClassName(variable);
-            let scssData = '@import "../../js/app/components/' + variable + '/' + className +'";\n';
+            let scssData = '@import "../../js/app/components/' + variable + '/' + className + '";\n';
             fs.appendFile(routs.scss, scssData, function (err) {
                 if (err) throw err;
-            }, ()=> {
+            }, () => {
 
                 console.log('\n✔️   Se agregó referencia a ' + routs.scss);
                 resolve();
@@ -61,11 +63,35 @@
             });
         });
 
-        function getFileName(){
+        function getFileName() {
             return (extension == 'scss') ? '_' + utilFiles.getCssClassName(variable) : variable;
         }
     }
 
-    module.exports = file;
+    let getConfigDeployFile = () => {
+        return new Promise((resolve, reject) => {
+            fs.readFile('./.fnetconfig', 'utf8', (err, res) => {
+                if (err) {
+                    inquirier.setServerData()
+                            .then((res) => {
+                                fs.appendFile('./.fnetconfig', JSON.stringify(res), function (err) {
+                                    if (err) throw err;
+                                }, () => {
+                                    console.log('✔️   .fnetconfig');
+                                    console.log(`✔️   Se almacenó el legajo ${res.legajo} y la ruta de core ${res.rutaCore}`);
+                                    resolve(res);
+                                });
+                            });
+                } else {
+                    resolve(res);
+                }
+            });
+        });
+    }
+
+    module.exports = {
+        file,
+        getConfigDeployFile
+    };
 
 })();

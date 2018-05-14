@@ -46,12 +46,84 @@ const inquirer = require('inquirer');
         })
     };
 
-    function returnIndex(str){
+    let setServerData = () => {
+        return new Promise((resolve, reject) => {
+            inquirer
+                .prompt([
+                    {
+                        type: 'input',
+                        name: 'legajo',
+                        message: 'Ingresa tu legajo:',
+                        validate: (name) => {
+                            return name !== '';
+                        }
+                    },
+                    {
+                        type: 'input',
+                        name: 'rutaCore',
+                        message: 'Ingresa la ruta de Core:',
+                        validate: (name) => {
+                            return name !== '';
+                        }
+                    }
+                ])
+                .then(answers => {
+                    console.log('\n');
+                    resolve(answers);
+                });
+        })
+    };
+
+    let getConfigDesa = () => {
+        return new Promise((resolve, reject) => {
+            inquirer
+                .prompt([
+                    {
+                        type: 'input',
+                        name: 'desa',
+                        message: 'Ingresa Desa:',
+                        validate: (name) => {
+                            return name !== '';
+                        }
+                    }
+                ])
+                .then(answers => {
+                    console.log('\n');
+                    if (answers.desa == '1') {
+                        answers.ofuscado = 'SI';
+                        resolve(answers);
+                    } else {
+                        inquirer
+                            .prompt([
+                                {
+                                    type: 'list',
+                                    name: "ofuscado",
+                                    message: '¿Deseas ofuscar el código?',
+                                    choices: [
+                                        'SI',
+                                        'NO',
+                                        new inquirer.Separator()
+                                    ]
+                                }
+                            ])
+                            .then(answerList => {
+                                console.log('\n');
+                                answerList.desa = answers.desa;
+                                resolve(answerList);
+                            });
+                    }
+                });
+        })
+    };
+
+    function returnIndex(str) {
         return str.substring(0, str.indexOf(' '));
     }
 
     module.exports = {
         getMenu,
-        inputName
+        inputName,
+        setServerData,
+        getConfigDesa
     }
 })();
