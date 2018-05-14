@@ -73,17 +73,18 @@ const inquirier = require('./inquirer');
             fs.readFile('./.fnetconfig', 'utf8', (err, res) => {
                 if (err) {
                     inquirier.setServerData()
-                            .then((res) => {
-                                fs.appendFile('./.fnetconfig', JSON.stringify(res), function (err) {
+                            .then((response) => {
+                                fs.appendFile('./.fnetconfig', JSON.stringify(response), function (err) {
                                     if (err) throw err;
                                 }, () => {
                                     console.log('✔️   .fnetconfig');
-                                    console.log(`✔️   Se almacenó el legajo ${res.legajo} y la ruta de core ${res.rutaCore}`);
-                                    resolve(res);
+                                    console.log(chalk`✔️   Se almacenó el legajo {cyan ${response.legajo}} y la ruta de core {cyan ${response.rutaCore}}`);
+                                    console.log(`\n`);
+                                    resolve(response);
                                 });
                             });
                 } else {
-                    resolve(res);
+                    resolve(JSON.parse(res));
                 }
             });
         });
