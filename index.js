@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-const file = require('./files.js'),
-    chalk = require('chalk'),
-    inquirer = require('inquirer'),
+const chalk = require('chalk'),
+    actions = require('./actions.js'),
     program = require('commander');
-
-let createFile = new file();
 
 
 // HEADER
@@ -19,55 +16,7 @@ program
     .version('1.1.2', '-v, --version')
     .description('Crear componente para fnet');
 
-
-let actions = {
-    1: createComponenet,
-    2: createFactory
-}
-
-
-inquirer
-    .prompt([
-        {
-            type: 'list',
-            name: "accion",
-            message: '¿QUÉ QUIERES HACER?',
-            choices: [
-                '1 - Crear Componente',
-                '2 - Crear Factory',
-                new inquirer.Separator()
-            ]
-        },
-        {
-            type: 'input',
-            name: 'nombre',
-            message: '¿Qué nombre deseas utilizar? (respetar CamelCase)',
-            validate: (name) => {
-                return name !== '';
-            }
-        }
-    ])
-    .then(answers => {
-        console.log('\n');
-        actions[answers.accion.charAt(0)](answers.nombre); //Obtiene el número de la acción
-    });
-
-
-function createComponenet(variable) {
-    createFile.createComponent(variable)
-        .then((res) => {
-            console.log('\n');
-            console.log('👌  ¡Componente creado con éxito! 🎉');
-        })
-        .catch((err) => {
-            console.log(chalk`{red  ${err}}`)
-        });
-}
-
-function createFactory(variable) {
-    console.log(chalk`{cyan PRÓXIMAMENTE ESTARÁ DISPONIBLE}  ✍️  ✍️  ✍️`)
-}
-
+actions.init();
 
 /*
 program.on('--help', function () {

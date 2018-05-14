@@ -52,15 +52,18 @@
 
     let createFile = (variable, extension, data) => {
         return new Promise((resolve, reject) => {
-            let underscore = (extension == 'scss') ? '_' : '';
-            var fileName = routs.components + variable + '/' + underscore + variable + '.' + extension;
-            fs.appendFile(fileName, data, function (err) {
+            let fileRoute = routs.components + variable + '/' + getFileName() + '.' + extension;
+            fs.appendFile(fileRoute, data, function (err) {
                 if (err) throw err;
             }, () => {
-                console.log('✔️   ' + fileName);
+                console.log('✔️   ' + fileRoute);
                 resolve();
             });
         });
+
+        function getFileName(){
+            return (extension == 'scss') ? '_' + utilFiles.getCssClassName(variable) : variable;
+        }
     }
 
     module.exports = file;
