@@ -48,7 +48,7 @@ const chalk = require('chalk'),
 
                         getBranchesCore(res.rutaCore)
                             .then((resBranch) => {
-                                console.log(`El branch de CORE es: ${resBranch}`);
+                                console.log(`${resBranch}`);
                             })
 
                         /* let deployDesa = new Spawn(command, '/scripts/', 'Verificar que te encuenras en el ROOT del proyecto.');
@@ -62,19 +62,22 @@ const chalk = require('chalk'),
 
     function getBranchesCore(dir) {
         return new Promise((resolve, reject) => {
-            console.log(`Obteniendo ramas de CORE`);
+            let getCoreBranchesCwd = `${dir}/fnetcore`;
 
             function showBranches(res) {
                 inquirer.getBranch(res)
-                    .then((response) => {
-                        console.log('Hay que ejecutar el pull');
-                        resolve(response);
+                    .then((branchName) => {
+                        console.log(`\nEl branch de CORE es: ${branchName}.`);
+                        console.log(`Actualizando rama...`)
+                        return Spawn.gitChangeBranch(getCoreBranchesCwd, branchName);
+                    })
+                    .then((resCheckout) => {
+                        resolve(resCheckout);
                     });
             }
 
-            let getCoreBranchesCommand = `cd ${dir}/fnetcore && git fetch && git branch`;
-
-            Spawn.getBranch(getCoreBranchesCommand, showBranches);
+            console.log(`Obteniendo ramas de CORE`);
+            Spawn.getBranch(getCoreBranchesCwd, showBranches);
         })
     }
 

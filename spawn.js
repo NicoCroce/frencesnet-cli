@@ -35,17 +35,28 @@
         }
     }
 
-    function getBranch(command, cb) {
-        var branches = execute(command);
+    function getBranch(cwd, cb) {
+        execute(`cd ${cwd} && git fetch -p && ls`)
+            .stdout.on('data', function (data) {
+                execute(`cd ${cwd} && git branch`)
+                    .stdout.on('data', function (dataBranch) {
+                        cb(dataBranch.split('\n'));
+                    });
+            });
+    }
 
-        branches.stdout.on('data', function (data) {
-            cb(data.split('\n'));
+    function gitChangeBranch(cwd, branch) {
+        return new Promise((resolve, response) => {
+            execute(`cd ${cwd} && git checkout ${branch} && git pull && git status`)
+                .stdout.on('data', (res) => {
+                    resolve(res);
+                });
         });
-
     }
 
     module.exports = {
         Spawn,
-        getBranch
+        getBranch,
+        gitChangeBranch
     };
 })();
