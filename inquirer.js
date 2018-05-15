@@ -120,10 +120,30 @@ const inquirer = require('inquirer');
         return str.substring(0, str.indexOf(' '));
     }
 
+    let getBranch = (arrayList) => {
+        console.log('\n');
+        return new Promise((resolve, reject) => {
+            inquirer
+                .prompt([
+                    {
+                        type: 'list',
+                        name: "accion",
+                        message: '¿Qué branch deseas?',
+                        choices: arrayList
+                    },
+                ])
+                .then(answers => {
+                    console.log('\n');
+                    resolve(returnIndex(answers.accion));
+                });
+        });
+    };
+
     module.exports = {
         getMenu,
         inputName,
         setServerData,
-        getConfigDesa
+        getConfigDesa,
+        getBranch
     }
 })();

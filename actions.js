@@ -1,7 +1,7 @@
 'use strict';
 const chalk = require('chalk'),
     files = require('./files.js'),
-    spawn = require('child_process').spawn,
+    Spawn = require('./spawn'),
     inquirer = require('./inquirer.js');
 
 (() => {
@@ -46,15 +46,22 @@ const chalk = require('chalk'),
                         console.log('\n');
                         console.log(command + '\n');
 
-                        const child = spawn(command, {
-                            stdio: 'inherit',
-                            shell: true,
-                            cwd: process.cwd() + '/scripts/'
-                          });
+                        /* let deployDesa = new Spawn(command, '/scripts/', 'Verificar que te encuenras en el ROOT del proyecto.');
+                        deployDesa.executeSpawn(); */
 
-                          process.on('message', (msg) => {
-                            console.log('Message from parent:', msg);
-                          });
+                        console.log(`Obteniendo ramas de CORE`);
+
+                        function showBranches(res) {
+                            inquirer.getBranch(res)
+                                .then((response) => {
+                                    console.log(response);
+                                })
+                        }
+
+                        let getCoreBranchesCommand = `cd ${res.rutaCore}/fnetcore && git fetch && git branch`;
+                        
+                        Spawn.getBranch(getCoreBranchesCommand, showBranches);
+                        
                     });
             });
     }
