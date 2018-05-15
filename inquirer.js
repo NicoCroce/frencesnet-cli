@@ -134,7 +134,7 @@ const inquirer = require('inquirer');
                 ])
                 .then(answers => {
                     console.log('\n');
-                    resolve(returnIndex(answers.accion));
+                    resolve(answers.accion);
                 });
         });
     };

@@ -38,7 +38,7 @@ const chalk = require('chalk'),
                 inquirer.getConfigDesa()
                     .then((resDesa) => {
                         let command = `sh deployDesa.sh ${res.legajo} ${resDesa.desa} ${res.rutaCore} ${(resDesa.ofuscado == 'SI') ? '' : 'NOO'}`;
-                        
+
                         console.log(chalk` 👉   Legajo: {cyan ${res.legajo}}`);
                         console.log(chalk` 👉   Ruta de core {cyan ${res.rutaCore}}`);
                         console.log(chalk` 👉   Desa {cyan ${resDesa.desa}}`);
@@ -46,24 +46,36 @@ const chalk = require('chalk'),
                         console.log('\n');
                         console.log(command + '\n');
 
+                        getBranchesCore(res.rutaCore)
+                            .then((resBranch) => {
+                                console.log(`El branch de CORE es: ${resBranch}`);
+                            })
+
                         /* let deployDesa = new Spawn(command, '/scripts/', 'Verificar que te encuenras en el ROOT del proyecto.');
                         deployDesa.executeSpawn(); */
 
-                        console.log(`Obteniendo ramas de CORE`);
 
-                        function showBranches(res) {
-                            inquirer.getBranch(res)
-                                .then((response) => {
-                                    console.log(response);
-                                })
-                        }
 
-                        let getCoreBranchesCommand = `cd ${res.rutaCore}/fnetcore && git fetch && git branch`;
-                        
-                        Spawn.getBranch(getCoreBranchesCommand, showBranches);
-                        
                     });
             });
+    }
+
+    function getBranchesCore(dir) {
+        return new Promise((resolve, reject) => {
+            console.log(`Obteniendo ramas de CORE`);
+
+            function showBranches(res) {
+                inquirer.getBranch(res)
+                    .then((response) => {
+                        console.log('Hay que ejecutar el pull');
+                        resolve(response);
+                    });
+            }
+
+            let getCoreBranchesCommand = `cd ${dir}/fnetcore && git fetch && git branch`;
+
+            Spawn.getBranch(getCoreBranchesCommand, showBranches);
+        })
     }
 
     function createFactory(variable) {
