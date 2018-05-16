@@ -33,47 +33,49 @@ const chalk = require('chalk'),
     }
 
     function deployDesa() {
+        if (!files.rootProject()) {
+            return console.log(chalk`{red ❗  NO TE ENCUENTRAS EN EL ROOT DEL PROYECTO}  😱`);
+        }
         files.getConfigDeployFile()
             .then((res) => {
                 inquirer.getConfigDesa()
                     .then((resDesa) => {
                         let commandDeploy = `sh deployDesa.sh ${res.legajo} ${resDesa.desa} ${res.rutaCore} ${(resDesa.ofuscado == 'SI') ? '' : 'NOO'}`;
-
-                        console.log(chalk` 👉   Legajo: {cyan ${res.legajo}}`);
-                        console.log(chalk` 👉   Ruta de core {cyan ${res.rutaCore}}`);
-                        console.log(chalk` 👉   Desa {cyan ${resDesa.desa}}`);
-                        console.log(chalk` 👉   Ofuscado: {cyan ${resDesa.ofuscado}}`);
-                        console.log('\n');
-                        console.log(commandDeploy + '\n');
-
-                        getBranchesCore(res.rutaCore)
+                        getBranches(res.rutaCore, 'CORE')
                             .then((resBranch) => {
-                                console.log(`RESULTADO FINAL  ::::   ${resBranch}`);
-                            });
-
-                        /* child_process.execSpawnShell(commandDeploy, process.cwd() + '/scripts/', 'Verificar que te encuenras en el ROOT del proyecto.')
+                                return getBranches(process.cwd(), 'FRONT')
+                            })
+                            .then((resBranch) => {
+                                console.log(chalk`\nEjecutando deploy`);
+                                console.log(chalk` 👉   Legajo: {cyan ${res.legajo}}`);
+                                console.log(chalk` 👉   Ruta de core {cyan ${res.rutaCore}}`);
+                                console.log(chalk` 👉   Desa {cyan ${resDesa.desa}}`);
+                                console.log(chalk` 👉   Ofuscado: {cyan ${resDesa.ofuscado}}`);
+                                return child_process.execSpawnShell(commandDeploy, process.cwd() + '/scripts/', 'Verificar que te encuenras en el ROOT del proyecto.')
+                            })
                             .then((res) => {
                                 console.log(res);
-                            }).catch(err => console.log(err)); */
+                            }).catch(err => console.log(err));
                     });
             });
     }
 
-    function getBranchesCore(dir) {
+    function getBranches(srcRoute, branchType) {
+        console.log(chalk`\nTRABAJANDO SOBRE EL REPOSITORIO DE {cyan ${branchType}}\n`);
         return new Promise((resolve, reject) => {
-            let coreRoute = `${dir}/fnetcore`;
-
-            child_process.execSpawnShell('git fetch -p', coreRoute, 'No se actualizaron las ramas')
+            child_process.execSpawnShell('git fetch -p', srcRoute, 'No se actualizaron las ramas', `Obteniendo ramas de ${branchType}`)
                 .then(resFetch => {
-                    return child_process.execSpawnGetResult('git branch', coreRoute, 'No se actualizaron las ramas')
+                    return child_process.execSpawnGetResult('git branch', srcRoute, 'No se actualizaron las ramas')
                 })
                 .then((dataBranch) => {
                     inquirer.getBranch(dataBranch.split('\n'))
                         .then((branchName) => {
                             branchName = (branchName.charAt(0) == '*') ? branchName.substr(1) : branchName;
-                            console.log(`\nEl branch de CORE es: ${branchName}.`);
-                            console.log(`Actualizando rama...`)
-                            return child_process.execSpawnShell(`git checkout ${branchName} && git pull && git status`, coreRoute, 'No se actualizaron las ramas');
+                            console.log(chalk`\nEl branch de ${branchType} es: {cyan ${branchName}}. \n`);
+                            return child_process.execSpawnShell(`git checkout ${branchName} && git pull && git status`, srcRoute);
+                        })
+                        .then((resBranchUpdated) => {
+                            resolve();
                         })
                 }).catch(err => console.log(err));
         })

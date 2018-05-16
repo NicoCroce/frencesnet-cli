@@ -15,16 +15,12 @@ const inquirier = require('./inquirer');
     class file {
         createComponent(variable) {
             return new Promise((resolve, reject) => {
+                if(!rootProject()) { 
+                    return reject('❗  NO TE ENCUENTRAS EN EL ROOT DEL PROYECTO  😱');
+                }
                 if (fs.existsSync(routs.components + variable)) {
-                    reject('❗  EL COMPONENTE YA EXISTE, DEBES ELEGIR OTRO NOMBRE  🤔 ');
+                    return reject('❗  EL COMPONENTE YA EXISTE, DEBES ELEGIR OTRO NOMBRE  🤔 ');
                 } else {
-                    try {
-                        fs.mkdirSync(routs.components + variable);
-                    } catch (err) {
-                        reject('❗  NO TE ENCUENTRAS EN EL ROOT DEL PROYECTO  😱');
-                        throw err;
-                    }
-
                     Promise.all([createFile(variable, 'scss', utilFiles.getCssData(variable)),
                     createFile(variable, 'html', utilFiles.getHTMLdata(variable)),
                     createFile(variable, 'js', utilFiles.getJsData(variable))])
@@ -37,6 +33,14 @@ const inquirier = require('./inquirer');
             });
         }
     }
+
+    function rootProject() {
+        try {
+            return fs.statSync('./app/loginClementeApp-src.html').isFile();
+        } catch (e) {
+          return false;
+        }
+      }
 
     let addReferences = (variable) => {
         return new Promise((resolve, reject) => {
@@ -92,7 +96,8 @@ const inquirier = require('./inquirer');
 
     module.exports = {
         file,
-        getConfigDeployFile
+        getConfigDeployFile,
+        rootProject
     };
 
 })();

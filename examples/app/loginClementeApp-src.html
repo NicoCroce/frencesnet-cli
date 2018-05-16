@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:ng="http://angularjs.org" ng-app="loginclemente">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
+
+    <link rel="stylesheet" href="assets/css/mafalda-login.css?ts=version" />
+    <link rel="stylesheet" href="assets/fonts/bbva-icons-login/style.css?ts=version" />
+    <script>
+            var agent = navigator.userAgent;
+            var reg = /MSIE\s?(\d+)(?:\.(\d+))?/i;
+
+            var matches = agent.match(reg);
+
+            if (matches != null) {
+                if(matches[1] < 11){
+                    window.open('https://hb.bbv.com.ar/fnetcore/old-browser.html','_parent');
+                }
+            }
+    </script>
+
+    <script type="text/javascript"  src="https://www.bbvafrances.com.ar/fbin/js/iframeResizer.contentWindow.min.js" ></script>
+
+    <script src="js/bundles/mafalda-login.js?ts=version"></script>
+
+    <body ng-controller="PreLoginCtrl">
+
+        <div ng-include="'partials/public/loginClementeForm.html'"></div>
+
+    </body>
+</html>
